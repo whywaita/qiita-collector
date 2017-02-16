@@ -1,8 +1,12 @@
 {% extends "layout.html" %}
 {% block body %}
-  Title search <form action=".", method="POST">
-    <input type="text", name="query">
-    <input type="submit" name="search-query", value="Search">
+  <form action=".", method="POST">
+    <select name="type">
+      <option value="title">Title</option>
+      <option value="user_id">User ID</option>
+    </select>
+    <input type="text", name="query", class="textbox">
+    <input type="submit" name="search-query", value="Search" class="submit">
   </form>
   <ul class=entries>
   {% for entry in articles %}
