@@ -1,0 +1,14 @@
+<!doctype html>
+<title>Qiita Articles</title>
+<link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
+<body>
+  <div class=page>
+    <h1>Articles</h1>
+  </div>
+  {% for message in get_flashed_messages() %}
+  <div class=flash>{{ message }}</div>
+  {% endfor %}
+  {% block body %}
+  {% endblock %}
+  </div>
+</body>
