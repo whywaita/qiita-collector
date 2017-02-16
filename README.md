@@ -9,7 +9,7 @@ $ pip install -r requirements.txt
 $ python3 qiita-collector.py
 ```
 
-TODO: paste image
+![](https://raw.githubusercontent.com/whywaita/qiita-collector/master/resource/usage.png)
 
 # Author
 
