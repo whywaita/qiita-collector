@@ -4,7 +4,6 @@ import json
 
 app = Flask(__name__)
 app.config.from_object(__name__)
-articles = []  # empty list
 
 
 # get qiita article
@@ -27,7 +26,7 @@ def get_articles():
 @app.route('/', methods=['POST'])
 def get_word_articles():
     query = request.form['query']
-    print(articles)
+    articles = []  # empty list
     for article in dict_articles:
         if query in article["title"]:
             hit_article = dict(title=article["title"],
@@ -38,7 +37,6 @@ def get_word_articles():
             print(hit_article)
             articles.append(hit_article)
 
-    print(articles)
     return render_template('show_articles.html', articles=articles)
 
 
