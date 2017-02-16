@@ -1,1 +1,1 @@
-web: python3 qiita-collector.py
+web: gnucorn qiita-collector:app --log-file -
