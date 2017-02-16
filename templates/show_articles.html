@@ -2,7 +2,7 @@
 {% block body %}
   <ul class=entries>
   {% for entry in articles %}
-  <li><img src={{ entry.user_image }} width="50" height="50"> <a herf="{{ entry.url }}"> {{ entry.title }} </a> : <a herf="https://qiita.com/{{ entry.user_id|safe }}"> {{ entry.user_id|safe }} </a>
+  <li><img src={{ entry.user_image }} width="50" height="50"> <a href="{{ entry.url }}"> {{ entry.title }} </a> : <a href="https://qiita.com/{{ entry.user_id|safe }}"> {{ entry.user_id|safe }} </a>
   {% else %}
     <li><em>Unbelievable.  No articles here so far</em>
   {% endfor %}
