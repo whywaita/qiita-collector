@@ -1,1 +1,1 @@
-web: gnucorn qiita-collector:app --log-file -
+web: gunicorn qiita-collector:app --log-file -
