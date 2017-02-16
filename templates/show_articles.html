@@ -1,5 +1,9 @@
 {% extends "layout.html" %}
 {% block body %}
+  Title search <form action=".", method="POST">
+    <input type="text", name="query">
+    <input type="submit" name="search-query", value="Search">
+  </form>
   <ul class=entries>
   {% for entry in articles %}
   <li><img src={{ entry.user_image }} width="50" height="50">
