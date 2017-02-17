@@ -22,7 +22,6 @@ def get_articles():
                      user_image=article["user"]["profile_image_url"],
                      url=article["url"]
                      ) for article in dict_articles]
-    print(articles)
     return render_template('show_articles.html', articles=articles)
 
 
