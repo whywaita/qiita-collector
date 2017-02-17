@@ -9,8 +9,6 @@ $ pip install -r requirements.txt
 $ python3 qiita-collector.py
 ```
 
-![](https://raw.githubusercontent.com/whywaita/qiita-collector/master/resource/usage.png)
-
 Demo: [https://stormy-tor-35753.herokuapp.com/](https://stormy-tor-35753.herokuapp.com/)
 
 # Author
