@@ -1,13 +1,5 @@
-{% extends "layout.html" %}
+{% extends "form.html" %}
 {% block body %}
-  <form action=".", method="POST">
-    <select name="type" class="select">
-      <option value="title">Title</option>
-      <option value="user_id">User ID</option>
-    </select>
-    <input type="text", name="query", class="textbox">
-    <input type="submit" name="search-query", value="Search" class="submit">
-  </form>
   <ul class=entries>
   {% for entry in articles %}
   <li><img src={{ entry.user_image }} width="50" height="50">

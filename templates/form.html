@@ -1,0 +1,9 @@
+{% extends "layout.html" %}
+{% block search %}
+  <form action=".", method="POST">
+    <input type="text", name="query", class="textbox">
+    <input type="submit" name="search-query", value="Search" class="submit">
+  </form>
+  {% block body %}
+  {% endblock body %}
+{% endblock %}

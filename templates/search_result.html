@@ -1,0 +1,22 @@
+{% extends "form.html" %}
+{% block body %}
+  <h2>title</h2>
+  <ul class=entries>
+  {% for entry in articles_title %}
+  <li><img src={{ entry.user_image }} width="50" height="50">
+      <a href="{{ entry.url }}"> {{ entry.title }} </a> : <a href="https://qiita.com/{{ entry.user_id|safe }}"> {{ entry.user_id|safe }} </a>
+  {% else %}
+    <li><em>Unbelievable.  No articles here so far</em>
+  {% endfor %}
+  </ul>
+
+  <h2>User ID</h2>
+  <ul class=entries>
+  {% for entry in articles_user_id %}
+  <li><img src={{ entry.user_image }} width="50" height="50">
+      <a href="{{ entry.url }}"> {{ entry.title }} </a> : <a href="https://qiita.com/{{ entry.user_id|safe }}"> {{ entry.user_id|safe }} </a>
+  {% else %}
+    <li><em>Unbelievable.  No articles here so far</em>
+  {% endfor %}
+  </ul>
+{% endblock %}

@@ -22,35 +22,31 @@ def get_articles():
                      user_image=article["user"]["profile_image_url"],
                      url=article["url"]
                      ) for article in dict_articles]
-    return render_template('show_articles.html', articles=articles)
+    return render_template('show_all_articles.html', articles=articles)
 
 
 @app.route('/', methods=['POST'])
 def get_word_articles():
     """Search Article
     """
-    articles = []  # empty list
+    articles_title = []  # empty list
+    articles_user_id = []  # empty list
     # Get form Info
-    search_type = request.form.get('type')
     query = request.form['query']
 
     for article in dict_articles:
-        if search_type == "title":
-            if query in article["title"]:
-                hit_article = dict(title=article["title"],
-                                   user_id=article["user"]["id"],
-                                   user_image=article["user"]["profile_image_url"],
-                                   url=article["url"])
-                articles.append(hit_article)
-        if search_type == "user_id":
-            if query in article["user"]["id"]:
-                hit_article = dict(title=article["title"],
-                                   user_id=article["user"]["id"],
-                                   user_image=article["user"]["profile_image_url"],
-                                   url=article["url"])
-                articles.append(hit_article)
+        hit_article = dict(title=article["title"],
+                           user_id=article["user"]["id"],
+                           user_image=article["user"]["profile_image_url"],
+                           url=article["url"])
+        if query in article["title"]:
+            articles_title.append(hit_article)
+        if query in article["user"]["id"]:
+            articles_user_id.append(hit_article)
 
-    return render_template('show_articles.html', articles=articles)
+    return render_template('search_result.html',
+                           articles_title=articles_title,
+                           articles_user_id=articles_user_id)
 
 
 if __name__ == '__main__':
