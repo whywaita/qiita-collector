@@ -9,7 +9,7 @@ $ pip install -r requirements.txt
 $ python3 qiita-collector.py
 ```
 
-Demo: [https://stormy-tor-35753.herokuapp.com/](https://stormy-tor-35753.herokuapp.com/)
+Demo: [https://qiita-collector.herokuapp.com/](https://qiita-collector.herokuapp.com/)
 
 # Author
 
