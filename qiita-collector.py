@@ -23,8 +23,11 @@ def before_request():
     # already login
     if session.get('username') is not None:
         return
-    # request.path is login
-    if request.path == '/login' or request.path.count('/static'):
+    # login page
+    if request.path == '/login':
+        return
+    # staticファイルはリダイレクトしないように
+    if request.path.count('/static'):
         return
     # user need login
     return redirect('/login')
@@ -83,9 +86,7 @@ def _is_account_valid():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    # セッションからユーザ名を取り除く (ログアウトの状態にする)
     session.pop('username', None)
-    # ログインページにリダイレクトする
     return redirect(url_for('login'))
 
 
