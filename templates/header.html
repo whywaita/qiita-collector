@@ -2,13 +2,13 @@
 <title>Qiita Articles</title>
 <link rel=stylesheet type=text/css href="{{ url_for('static', filename='style.css') }}">
 <body>
-  <div class=page>
-    <h1><a href="/">Qiita Articles</a></h1>
-  </div>
-  {% for message in get_flashed_messages() %}
-  <div class=flash>{{ message }}</div>
-  {% endfor %}
+  <header>
+    <div class=page>
+      <h1><a href="/">Qiita Articles</a></h1>
+    </div>
+  </header>
+  {% block login %}
+  {% endblock %}
   {% block search %}
   {% endblock %}
-  </div>
 </body>

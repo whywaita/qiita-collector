@@ -1,16 +1,33 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, url_for, redirect, session
+import flask_login
 import urllib.request
 import json
 
 app = Flask(__name__)
 app.config.from_object(__name__)
+app.secret_key = 'secret_key'
 
+login_manager = flask_login.LoginManager()
+login_manager.login_view = "login"
+login_manager.init_app(app)
 
 # get qiita article
 with urllib.request.urlopen("https://qiita.com/api/v2/items") as res:
     json_articles = res.read().decode("utf-8")
     dict_articles = json.loads(json_articles)
+
+
+@app.before_request
+def before_request():
+    # already login
+    if session.get('username') is not None:
+        return
+    # request.path is login
+    if request.path == '/login' or request.path.count('/static'):
+        return
+    # user need login
+    return redirect('/login')
 
 
 @app.route('/')
@@ -44,9 +61,32 @@ def get_word_articles():
         if query in article["user"]["id"]:
             articles_user_id.append(hit_article)
 
-    return render_template('search_result.html',
+    return render_template('result.html',
                            articles_title=articles_title,
                            articles_user_id=articles_user_id)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    if request.method == 'POST' and _is_account_valid():
+            # registration to session
+            session['username'] = request.form['username']
+            return redirect('/')
+    return render_template('login.html')
+
+
+def _is_account_valid():
+    if request.form.get('username') is None:
+        return False
+    return True
+
+
+@app.route('/logout', methods=['GET'])
+def logout():
+    # セッションからユーザ名を取り除く (ログアウトの状態にする)
+    session.pop('username', None)
+    # ログインページにリダイレクトする
+    return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
