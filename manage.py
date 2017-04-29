@@ -1,16 +1,41 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, render_template, request, url_for, redirect, session
-import flask_login
 import urllib.request
 import json
+import toml
+
+from models import db
+
+"""Initialize
+- app
+- load config
+- get all article
+- connect mysql
+"""
+
+# load config
+with open("config.toml") as configfile:
+    config = toml.loads(configfile.read())
+
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.secret_key = 'secret_key'
 
-login_manager = flask_login.LoginManager()
-login_manager.login_view = "login"
-login_manager.init_app(app)
+# DB
+app.config['SQLALCHEMY_DATABASE_URI'] = \
+        'mysql+pymysql://' + \
+        config["mysql"]["user"] + ':' + config["mysql"]["password"] + \
+        '@' + config["mysql"]["server"] + \
+        '/' + config["mysql"]["db_name"]
+app.config['SQLALCHEMY_NATIVE_UNICODE'] = config["mysql"]["charset"]
+
+db.init_app(app)
+db.app = app
+migrate = db.Migrate(app, db)
+manager = db.Manager(app)
+manager.add_command('db', db.MigrateCommand)
+manager.add_command('runserver')
 
 # get qiita article
 with urllib.request.urlopen("https://qiita.com/api/v2/items") as res:
