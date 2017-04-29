@@ -1,5 +1,12 @@
 {% extends "header.html" %}
 {% block login %}
+  {% with message = get_flashed_messages() %}
+      {% if message %}
+        <div class="flash error">
+        	{{ message[0] }}
+        </div>
+			{% endif %}
+  {% endwith %}
   Please input your username!
   <form action="/login" method="POST">
     <input type="text" name="username" class="textbox">

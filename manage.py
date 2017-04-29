@@ -1,10 +1,21 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, render_template, request, url_for, redirect, session
+from flask import (
+        Flask,
+        render_template,
+        request,
+        url_for,
+        redirect,
+        session,
+        flash
+        )
 import urllib.request
 import json
 import toml
 
-from models import db
+import auth
+import models
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
 
 """Initialize
 - app
@@ -14,6 +25,7 @@ from models import db
 """
 
 # load config
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 with open("config.toml") as configfile:
     config = toml.loads(configfile.read())
 
@@ -30,17 +42,25 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
         '/' + config["mysql"]["db_name"]
 app.config['SQLALCHEMY_NATIVE_UNICODE'] = config["mysql"]["charset"]
 
-db.init_app(app)
-db.app = app
-migrate = db.Migrate(app, db)
-manager = db.Manager(app)
-manager.add_command('db', db.MigrateCommand)
+models.db.init_app(app)
+models.db.app = app
+migrate = Migrate(app, models.db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 manager.add_command('runserver')
 
 # get qiita article
 with urllib.request.urlopen("https://qiita.com/api/v2/items") as res:
     json_articles = res.read().decode("utf-8")
     dict_articles = json.loads(json_articles)
+
+
+@app.before_first_request
+def init():
+    models.db.create_all()
+    admin = models.User("admin", "password")
+    models.db.session.add(admin)
+    models.db.session.commit()
 
 
 @app.before_request
@@ -96,17 +116,17 @@ def get_word_articles():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    if request.method == 'POST' and _is_account_valid():
+    if request.method == 'POST':
+        if auth._is_account_valid(request.form['username']):
             # registration to session
             session['username'] = request.form['username']
             return redirect('/')
+
+        # if invaild account name
+        flash('invaild login name!', 'error')
+        return render_template('login.html')
+
     return render_template('login.html')
-
-
-def _is_account_valid():
-    if request.form.get('username') is None:
-        return False
-    return True
 
 
 @app.route('/logout', methods=['GET'])

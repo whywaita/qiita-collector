@@ -1,0 +1,13 @@
+[mysql]
+server = "localhost"
+port = 3306
+user = "root"
+password = "secret"
+db_name = "qiita"
+charset = "utf8"
+
+[twitter]
+consumer_key = ""
+consumer_secret = ""
+access_token_key = ""
+access_token_secret = ""
