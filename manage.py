@@ -11,6 +11,7 @@ from flask import (
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 from beaker.middleware import SessionMiddleware
+from flask.sessions import SessionInterface
 import urllib.request
 import json
 import toml
@@ -53,7 +54,7 @@ db.app = app
 # redis
 session_opts = {
         'session.type': 'redis',
-        'session.url': os.getenv('QC_REDIS_URL', config["redis"]["url"])
+        'session.url': os.getenv('QC_REDIS_URL', config["redis"]["url"]),
         }
 
 # commands
@@ -76,7 +77,7 @@ if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
     db.session.commit()
 
 
-class BeakerSessionInterface(Flask.sessions.SessionInterface):
+class BeakerSessionInterface(SessionInterface):
     def open_session(self, app, request):
         return request.environ['beaker.session']
 

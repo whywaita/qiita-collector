@@ -4,10 +4,14 @@ services:
   app:
     build: .
     ports:
-      - "5000:5000"
+      - "8000:8000"
     depends_on:
       - db
+      - redis
+    entrypoint: /app/scripts/wait-for-it.sh db:3306 -- gunicorn -b 0.0.0.0 manage:app
   db:
-    image: mysql
+    image: mysql:5.5
     environment:
       MYSQL_ROOT_PASSWORD: "secret"
+  redis:
+    image: redis:alpine
