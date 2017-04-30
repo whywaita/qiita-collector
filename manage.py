@@ -13,7 +13,8 @@ import json
 import toml
 
 import auth
-import models
+from models import User, db
+from sqlalchemy_utils import database_exists, create_database
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
 
@@ -42,9 +43,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
         '/' + config["mysql"]["db_name"]
 app.config['SQLALCHEMY_NATIVE_UNICODE'] = config["mysql"]["charset"]
 
-models.db.init_app(app)
-models.db.app = app
-migrate = Migrate(app, models.db)
+db.init_app(app)
+db.app = app
+migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 manager.add_command('runserver')
@@ -57,10 +58,12 @@ with urllib.request.urlopen("https://qiita.com/api/v2/items") as res:
 
 @app.before_first_request
 def init():
-    models.db.create_all()
-    admin = models.User("admin", "password")
-    models.db.session.add(admin)
-    models.db.session.commit()
+    if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
+        create_database(app.config['SQLALCHEMY_DATABASE_URI'])
+    db.create_all()
+    admin = User("admin", "password")
+    db.session.add(admin)
+    db.session.commit()
 
 
 @app.before_request
