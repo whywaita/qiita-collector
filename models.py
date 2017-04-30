@@ -5,6 +5,7 @@ from werkzeug.security import generate_password_hash, \
              check_password_hash
 
 db = SQLAlchemy()
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
 class User(db.Model):

@@ -8,16 +8,20 @@ from flask import (
         session,
         flash
         )
+from flask_script import Manager
+from flask_migrate import Migrate, MigrateCommand
+from beaker.middleware import SessionMiddleware
 import urllib.request
 import json
 import toml
 import os
 
+
 import auth
+
 from models import User, db
 from sqlalchemy_utils import database_exists, create_database
-from flask_script import Manager
-from flask_migrate import Migrate, MigrateCommand
+
 
 """Initialize
 - app
@@ -27,7 +31,6 @@ from flask_migrate import Migrate, MigrateCommand
 """
 
 # load config
-SQLALCHEMY_TRACK_MODIFICATIONS = True
 with open("config.toml") as configfile:
     config = toml.loads(configfile.read())
 
@@ -44,9 +47,16 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
     '@' + os.getenv('QC_MYSQL_SERVER', config["mysql"]["server"]) + \
     '/' + os.getenv('QC_MYSQL_DBNAME', config["mysql"]["db_name"])
 app.config['SQLALCHEMY_NATIVE_UNICODE'] = config["mysql"]["charset"]
-
 db.init_app(app)
 db.app = app
+
+# redis
+session_opts = {
+        'session.type': 'redis',
+        'session.url': os.getenv('QC_REDIS_URL', config["redis"]["url"])
+        }
+
+# commands
 migrate = Migrate(app, db)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
@@ -64,6 +74,14 @@ if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
     admin = User('admin', 'password')
     db.session.add(admin)
     db.session.commit()
+
+
+class BeakerSessionInterface(Flask.sessions.SessionInterface):
+    def open_session(self, app, request):
+        return request.environ['beaker.session']
+
+    def save_session(self, app, session, response):
+        session.save()
 
 
 @app.before_request
@@ -139,4 +157,6 @@ def logout():
 
 
 if __name__ == '__main__':
+    app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
+    app.session_interface = BeakerSessionInterface()
     app.run(debug=True)
