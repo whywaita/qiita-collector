@@ -11,6 +11,7 @@ from flask import (
 import urllib.request
 import json
 import toml
+import os
 
 import auth
 from models import User, db
@@ -37,10 +38,11 @@ app.secret_key = 'secret_key'
 
 # DB
 app.config['SQLALCHEMY_DATABASE_URI'] = \
-        'mysql+pymysql://' + \
-        config["mysql"]["user"] + ':' + config["mysql"]["password"] + \
-        '@' + config["mysql"]["server"] + \
-        '/' + config["mysql"]["db_name"]
+    'mysql+pymysql://' + \
+    os.getenv('QC_MYSQL_USER', config["mysql"]["user"]) + \
+    ':' + os.getenv('QC_MYSQL_PASS', config["mysql"]["password"]) + \
+    '@' + os.getenv('QC_MYSQL_SERVER', config["mysql"]["server"]) + \
+    '/' + os.getenv('QC_MYSQL_DBNAME', config["mysql"]["db_name"])
 app.config['SQLALCHEMY_NATIVE_UNICODE'] = config["mysql"]["charset"]
 
 db.init_app(app)
@@ -55,13 +57,11 @@ with urllib.request.urlopen("https://qiita.com/api/v2/items") as res:
     json_articles = res.read().decode("utf-8")
     dict_articles = json.loads(json_articles)
 
-
-@app.before_first_request
-def init():
-    if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
-        create_database(app.config['SQLALCHEMY_DATABASE_URI'])
+# migrate (tmp)
+if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
+    create_database(app.config['SQLALCHEMY_DATABASE_URI'])
     db.create_all()
-    admin = User("admin", "password")
+    admin = User('admin', 'password')
     db.session.add(admin)
     db.session.commit()
 
@@ -120,7 +120,7 @@ def get_word_articles():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        if auth._is_account_valid(request.form['username']):
+        if auth._is_account_valid(request.form):
             # registration to session
             session['username'] = request.form['username']
             return redirect('/')
