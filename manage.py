@@ -10,13 +10,14 @@ from flask import (
         )
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
+
 from beaker.middleware import SessionMiddleware
 from flask.sessions import SessionInterface
+
 import urllib.request
 import json
 import toml
 import os
-
 
 import auth
 

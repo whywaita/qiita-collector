@@ -10,4 +10,4 @@ COPY . /app
 
 EXPOSE 8000
 
-ENTRYPOINT ["gunicorn", "-b", "0.0.0.0", "manage:app"]
+ENTRYPOINT ["gunicorn", "manage:app"]
