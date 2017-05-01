@@ -1,5 +1,6 @@
 alembic==0.9.1
 Beaker==1.8.1
+git+git://github.com/bbangert/beaker_extensions.git
 cffi==1.10.0
 click==6.7
 Flask==0.12
