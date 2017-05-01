@@ -8,6 +8,6 @@ ADD requirements.txt /app
 RUN pip install -r requirements.txt
 COPY . /app
 
-EXPOSE 8000
+EXPOSE 5000
 
-ENTRYPOINT ["gunicorn", "manage:app"]
+ENTRYPOINT ["python", "manage.py"]
