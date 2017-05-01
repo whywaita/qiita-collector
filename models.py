@@ -5,14 +5,13 @@ from werkzeug.security import generate_password_hash, \
              check_password_hash
 
 db = SQLAlchemy()
-SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 
 class User(db.Model):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), unique=True, nullable=False)
-    pwdhash = db.Column(db.String(1000000))  # TODO: 後で適切な値にする
+    pwdhash = db.Column(db.Text(1000000))  # TODO: 後で適切な値にする
     admin = db.Column(db.Boolean, default=0)
 
     def __init__(self, name, password):

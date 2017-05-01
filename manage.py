@@ -35,7 +35,7 @@ from sqlalchemy_utils import database_exists, create_database
 # load config
 with open("config.toml") as configfile:
     config = toml.loads(configfile.read())
-
+SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -161,4 +161,4 @@ def logout():
 if __name__ == '__main__':
     app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
     app.session_interface = BeakerSessionInterface()
-    app.run(debug=True)
+    app.run("0.0.0.0", 5000, debug=True)
