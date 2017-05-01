@@ -8,7 +8,7 @@ services:
     depends_on:
       - db
       - redis
-    entrypoint: /app/scripts/wait-for-it.sh db:3306 -- gunicorn -b 0.0.0.0 manage:app
+    entrypoint: /app/scripts/wait-for-it.sh db:3306 -- gunicorn manage:app -b 0.0.0.0 --access-logfile -
   db:
     image: mysql:5.5
     environment:
