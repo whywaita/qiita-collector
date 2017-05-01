@@ -1,0 +1,10 @@
+[mysql]
+server = "db"
+port = 3306
+user = "root"
+password = "secret"
+db_name = "qiita"
+charset = "utf8"
+
+[redis]
+url = "redis:6379"
