@@ -72,7 +72,7 @@ with urllib.request.urlopen("https://qiita.com/api/v2/items") as res:
 # migrate (tmp)
 if not database_exists(app.config['SQLALCHEMY_DATABASE_URI']):
     create_database(app.config['SQLALCHEMY_DATABASE_URI'])
-db.create_all(checkfirst=True)
+db.create_all()
 if len(User.query.filter(User.name == 'admin').all()) == 0:
     admin = User('admin', 'password')
     db.session.add(admin)
