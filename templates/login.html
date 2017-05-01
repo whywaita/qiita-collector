@@ -9,8 +9,8 @@
   {% endwith %}
   Please input your username!
   <form action="/login" method="POST">
-    <input type="text" name="username" class="textbox">
-    <input type="password" name="password" class="textbox">
+    <input type="text" name="username" placeholder="username" class="textbox" required>
+    <input type="password" name="password" placeholder="password" class="textbox" required>
     <input type="submit" value="login" class="submit">
   </form>
 {% endblock %}
