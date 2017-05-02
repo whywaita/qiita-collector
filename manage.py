@@ -162,4 +162,5 @@ def logout():
 if __name__ == '__main__':
     app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
     app.session_interface = BeakerSessionInterface()
-    app.run("0.0.0.0", 5000, debug=True)
+    port = int(os.getenv('PORT', 5000))
+    app.run("0.0.0.0", port, debug=True)
