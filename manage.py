@@ -5,25 +5,20 @@ from flask import (
         request,
         url_for,
         redirect,
-        session,
         flash
         )
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-
-from beaker.middleware import SessionMiddleware
-from flask.sessions import SessionInterface
+from flask_redis import FlaskRedis
 
 import urllib.request
 import json
-import toml
 import os
 
 import auth
 
 from models import User, db
 from sqlalchemy_utils import database_exists, create_database
-
 
 """Initialize
 - app
@@ -32,31 +27,34 @@ from sqlalchemy_utils import database_exists, create_database
 - connect mysql
 """
 
-# load config
-with open("config.toml") as configfile:
-    config = toml.loads(configfile.read())
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.secret_key = 'secret_key'
 
-# DB
+# set config
+app.config.from_pyfile('config_file.cfg')
 app.config['SQLALCHEMY_DATABASE_URI'] = \
     'mysql+pymysql://' + \
-    os.getenv('QC_MYSQL_USER', config["mysql"]["user"]) + \
-    ':' + os.getenv('QC_MYSQL_PASS', config["mysql"]["password"]) + \
-    '@' + os.getenv('QC_MYSQL_SERVER', config["mysql"]["server"]) + \
-    '/' + os.getenv('QC_MYSQL_DBNAME', config["mysql"]["db_name"])
-app.config['SQLALCHEMY_NATIVE_UNICODE'] = config["mysql"]["charset"]
+    os.getenv('QC_MYSQL_USER', app.config['MYSQL_USER']) + \
+    ':' + os.getenv('QC_MYSQL_PASS', app.config['MYSQL_PASS']) + \
+    '@' + os.getenv('QC_MYSQL_SERVER', app.config['MYSQL_SERVER']) + \
+    '/' + os.getenv('QC_MYSQL_DBNAME', app.config['MYSQL_DB_NAME'])
+app.config['SQLALCHEMY_NATIVE_UNICODE'] = app.config['MYSQL_CHAR']
+
+# instance init
 db.init_app(app)
 db.app = app
 
 # redis
-session_opts = {
-        'session.type': 'redis',
-        'session.url': os.getenv('QC_REDIS_URL', config["redis"]["url"]),
-        }
+if os.getenv('QC_REDIS_URL') is not None:
+    # if set QC_REDIS_URL, overwrite REDIS URL
+    app.config['REDIS_URL'] = os.getenv('QC_REDIS_URL')
+print(app.config['REDIS_URL'])
+print("REDIS_URL CHECK")
+print(os.getenv('QC_REDIS_URL'))
+redis_store = FlaskRedis(app)
 
 # commands
 migrate = Migrate(app, db)
@@ -79,18 +77,10 @@ if len(User.query.filter(User.name == 'admin').all()) == 0:
     db.session.commit()
 
 
-class BeakerSessionInterface(SessionInterface):
-    def open_session(self, app, request):
-        return request.environ['beaker.session']
-
-    def save_session(self, app, session, response):
-        session.save()
-
-
 @app.before_request
 def before_request():
     # already login
-    if session.get('username') is not None:
+    if redis_store.get('username') is not None:
         return
     # login page
     if request.path == '/login':
@@ -143,7 +133,7 @@ def login():
     if request.method == 'POST':
         if auth._is_account_valid(request.form):
             # registration to session
-            session['username'] = request.form['username']
+            redis_store.set('username', request.form['username'])
             return redirect('/')
 
         # if invaild account name
@@ -155,12 +145,10 @@ def login():
 
 @app.route('/logout', methods=['GET'])
 def logout():
-    session.pop('username', None)
+    redis_store.set('username', '')
     return redirect(url_for('login'))
 
 
 if __name__ == '__main__':
-    app.wsgi_app = SessionMiddleware(app.wsgi_app, session_opts)
-    app.session_interface = BeakerSessionInterface()
     port = int(os.getenv('PORT', 5000))
     app.run("0.0.0.0", port, debug=True)
