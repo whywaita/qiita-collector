@@ -1,10 +1,10 @@
 alembic==0.9.1
 Beaker==1.8.1
-git+git://github.com/bbangert/beaker_extensions.git
 cffi==1.10.0
 click==6.7
 Flask==0.12
 Flask-Migrate==2.0.3
+Flask-Redis==0.3.0
 Flask-Script==2.0.5
 Flask-SQLAlchemy==2.2
 future==0.16.0
@@ -21,6 +21,5 @@ requests==2.13.0
 six==1.10.0
 SQLAlchemy==1.1.9
 SQLAlchemy-Utils==0.32.14
-toml==0.9.2
 urlparse3==1.1
 Werkzeug==0.11.15
