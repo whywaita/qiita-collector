@@ -6,10 +6,10 @@ Qiita collector display new article in [Qiita](http://qiita.com/)
 
 ```
 $ pip install -r requirements.txt
-$ python3 qiita-collector.py
+$ python3 manage.py
 ```
 
-Demo: [https://qiita-collector.herokuapp.com/](https://qiita-collector.herokuapp.com/)
+Demo: [https://qiita-collector.herokuapp.com/](https://qiita-collector.herokuapp.com/) (admin / password)
 
 # Author
 
