@@ -7,9 +7,9 @@
       <h1><a href="/">Qiita Articles</a></h1>
     </div>
 
-    {% if session['username'] %}
+    {% if user %}
     <div>
-      current user: {{ session['username'] }}
+      current user: {{ user }}
       <form action="/logout" method="GET" style="display: inline">
         <input type="submit" value="logout">
       </form>

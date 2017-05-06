@@ -98,7 +98,9 @@ def get_articles():
                      user_image=article["user"]["profile_image_url"],
                      url=article["url"]
                      ) for article in dict_articles]
-    return render_template('show_all_articles.html', articles=articles)
+    return render_template('show_all_articles.html',
+                           articles=articles,
+                           user=redis_store.get('username').decode("utf-8"))
 
 
 @app.route('/', methods=['POST'])
@@ -122,7 +124,8 @@ def get_word_articles():
 
     return render_template('result.html',
                            articles_title=articles_title,
-                           articles_user_id=articles_user_id)
+                           articles_user_id=articles_user_id,
+                           user=redis_store.get('username').decode("utf-8"))
 
 
 @app.route('/login', methods=['GET', 'POST'])
