@@ -28,5 +28,3 @@ if os.getenv('QC_REDIS_URL') is not None:
     # if set QC_REDIS_URL, overwrite REDIS URL
     app.config['REDIS_URL'] = os.getenv('QC_REDIS_URL')
 redis_store = FlaskRedis(app)
-
-from . import routes

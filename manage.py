@@ -6,6 +6,7 @@ from sqlalchemy_utils import database_exists, create_database
 
 from qc import app, db
 from qc.models import User
+import qc.routes
 
 # commands
 manager = Manager(app)
