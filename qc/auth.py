@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from models import User
+from .models import User
 
 
 def _is_account_valid(body):
