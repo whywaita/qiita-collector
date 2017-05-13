@@ -8,7 +8,9 @@ services:
     depends_on:
       - db
       - redis
-    entrypoint: /app/scripts/wait-for-it.sh db:3306 -- /app/scripts/wait-for-it.sh redis:6379 -- python manage.py
+    entrypoint: /app/scripts/wait-for-it.sh db:3306 -- /app/scripts/wait-for-it.sh redis:6379 -- python manage.py runserver
+    volumes:
+      - .:/app/
   db:
     image: mysql:5.5
     environment:
