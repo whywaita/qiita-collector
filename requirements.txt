@@ -17,7 +17,7 @@ MarkupSafe==0.23
 pycparser==2.17
 PyMySQL==0.7.11
 redis==2.10.5
-requests==2.13.0
+requests==2.20.0
 six==1.10.0
 SQLAlchemy==1.1.9
 SQLAlchemy-Utils==0.32.14
